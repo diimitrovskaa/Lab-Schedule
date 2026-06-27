@@ -1,0 +1,65 @@
+﻿@model List<LabsRaspored.Models.Predmeti>
+
+@{
+    var labs = ViewBag.Labs as List<LabsRaspored.Models.Laboratorija> ?? new();
+    var slots = ViewBag.Slots as List<LabsRaspored.Models.Slot> ?? new();
+}
+
+<h1>Распоред за лаборатории</h1>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Предмет</th>
+            <th>Студенти</th>
+            <th>Фреквенција</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.Name</td>
+                <td>@s.Students</td>
+                <td>@s.Frequency</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+<br />
+
+<h2>Термини</h2>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Лабораторија</th>
+            <th>Термин</th>
+            <th>Студенти</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var slot in slots)
+        {
+            var lab = labs.FirstOrDefault(x => x.Id == slot.LabId);
+
+            var subject = Model.FirstOrDefault(x => x.Id == slot.SubjectId);
+
+            <tr>
+                <td>@lab?.Name</td>
+                <td>@slot.Time</td>
+                <td>
+                    @subject?.Name
+                    (@slot.AssignedStudents студенти)
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+

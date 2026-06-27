@@ -1,0 +1,790 @@
+﻿@model List<LabsRaspored.Models.Predmeti>
+
+@{
+    var allSubjects = ViewBag.AllSubjects as List<LabsRaspored.Models.Predmeti> ?? new();
+    var labs = ViewBag.Labs as List<LabsRaspored.Models.Laboratorija> ?? new();
+    var slots = ViewBag.Slots as List<LabsRaspored.Models.Slot> ?? new();
+    ViewBag.Labs = labs;
+
+    string[] days =
+    {
+        "Понеделник",
+        "Вторник",
+        "Среда",
+        "Четврток",
+        "Петок"
+    };
+
+    string[] times =
+    {
+        "08:00-09:30",
+        "09:30-11:00",
+        "11:00-12:30",
+        "12:30-14:00",
+        "14:00-15:30",
+        "15:30-17:00",
+        "17:00-18:30",
+        "18:30-20:00"
+    };
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg,#eef2ff,#f8fafc);
+        font-family: 'Segoe UI', sans-serif;
+        min-height: 100vh;
+    }
+
+        body.dark-mode {
+            background: #0f172a !important;
+            color: white !important;
+        }
+
+    .card-custom {
+        border: none;
+        border-radius: 22px;
+        background: white;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+        transition: 0.3s;
+    }
+
+        .card-custom:hover {
+            transform: translateY(-3px);
+        }
+
+    body.dark-mode .card-custom {
+        background: #1e293b !important;
+        color: white !important;
+    }
+
+    .main-title {
+        font-size: 34px;
+        font-weight: 800;
+        background: linear-gradient(135deg,#4f46e5,#06b6d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .section-title {
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 12px !important;
+        padding: 10px 18px;
+        font-weight: 700;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg,#4f46e5,#2563eb);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg,#16a34a,#22c55e);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg,#dc2626,#ef4444);
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px !important;
+        padding: 10px 14px;
+    }
+
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+        background: #334155 !important;
+        color: white !important;
+        border: 1px solid #475569 !important;
+    }
+
+    body.dark-mode option {
+        background: #1e293b;
+    }
+
+    .semester-badge {
+        display: inline-block;
+        padding: 12px 24px;
+        border-radius: 999px;
+        background: linear-gradient(135deg,#4f46e5,#06b6d4);
+        color: white;
+        font-weight: 700;
+    }
+
+    .table {
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+        .table th {
+            background: linear-gradient(135deg,#4f46e5,#2563eb);
+            color: white;
+            text-align: center;
+            padding: 14px;
+        }
+
+        .table td {
+            padding: 14px;
+            vertical-align: middle;
+        }
+
+    .subject-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: black;
+    }
+
+    .students-input {
+        width: 130px;
+        margin: auto;
+    }
+
+    .frequency-select {
+        width: 170px;
+        margin: auto;
+    }
+
+    .schedule-table {
+        min-width: 1400px;
+    }
+
+    .day-header {
+        background: #2563eb !important;
+        color: white;
+    }
+
+    .lab-header {
+        background: #3b82f6 !important;
+        color: white;
+    }
+
+    .time-header {
+        background: #1e293b !important;
+        color: white;
+    }
+
+    .time-cell {
+        font-weight: 700;
+        background: #f1f5f9;
+    }
+
+    .slot-filled {
+        color: white;
+        padding: 12px;
+        border-radius: 14px;
+        font-weight: 700;
+    }
+
+    .stats-box {
+        background: #f8fafc;
+        padding: 15px;
+        border-radius: 14px;
+        border-left: 6px solid #4f46e5;
+    }
+
+    #semesterForm {
+        display: none;
+    }
+
+    body.dark-mode .schedule-table {
+        background: #1e293b !important;
+        color: white !important;
+    }
+
+        body.dark-mode .schedule-table td {
+            background: #1e293b !important;
+            color: white !important;
+            border: 1px solid #475569 !important;
+        }
+
+        body.dark-mode .schedule-table th {
+            border: 1px solid #475569 !important;
+        }
+
+    body.dark-mode .time-cell {
+        background: #334155 !important;
+        color: white !important;
+    }
+
+    body.dark-mode .table-bordered {
+        border-color: #475569 !important;
+    }
+
+    body.dark-mode .table-responsive {
+        background: #1e293b !important;
+        border-radius: 18px;
+    }
+
+    body.dark-mode .schedule-table select {
+        background: #334155 !important;
+        color: white !important;
+        border: 1px solid #475569 !important;
+    }
+
+    body.dark-mode .schedule-table option {
+        background: #1e293b !important;
+        color: white !important;
+    }
+
+    body.dark-mode .btn-danger {
+        background: linear-gradient(135deg,#b91c1c,#ef4444) !important;
+    }
+
+    body.dark-mode .btn-primary {
+        background: linear-gradient(135deg,#4338ca,#2563eb) !important;
+    }
+
+    body.dark-mode table {
+        background: #1e293b !important;
+        color: white !important;
+    }
+
+        body.dark-mode table thead th {
+            background: #0f172a !important;
+            color: white !important;
+            border-color: #334155 !important;
+        }
+
+        body.dark-mode table tbody td {
+            background: #1e293b !important;
+            color: white !important;
+            border-color: #334155 !important;
+        }
+
+        body.dark-mode table input,
+        body.dark-mode table select {
+            background: #334155 !important;
+            color: white !important;
+            border: 1px solid #475569 !important;
+        }
+
+        body.dark-mode table tbody tr:hover {
+            background: #334155 !important;
+        }
+
+    footer {
+        color: #1e293b;
+        transition: 0.3s;
+    }
+
+    body.dark-mode footer {
+        background: #0f172a !important;
+        color: white !important;
+        border-top: 1px solid #334155;
+    }
+
+        body.dark-mode footer * {
+            color: white !important;
+        }
+
+    body.dark-mode label {
+        color: white !important;
+    }
+
+    body.dark-mode .text-danger {
+        color: #f87171 !important;
+    }
+
+    body.dark-mode .card-custom input,
+    body.dark-mode .card-custom select {
+        background: #334155 !important;
+        color: white !important;
+        border: 1px solid #475569 !important;
+    }
+
+        body.dark-mode .card-custom input::placeholder {
+            color: #e2e8f0 !important;
+            opacity: 1;
+        }
+
+    body.dark-mode .card-custom option {
+        background: #1e293b !important;
+        color: white !important;
+    }
+
+    .required-subject {
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .schedule-table {
+        page-break-inside: auto;
+    }
+
+        .schedule-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+    body.dark-mode .required-subject {
+        color: white;
+    }
+</style>
+
+<div class="container py-4">
+
+    <div class="card card-custom p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="main-title">
+                📘 Распоред за лабораториски вежби
+            </h2>
+            <button class="btn btn-dark" onclick="toggleDarkMode()">
+                🌙 Dark Mode
+            </button>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card-custom p-4 text-center">
+                    <h2>@Model.Count</h2>
+                    <p>📚 Предмети</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-custom p-4 text-center">
+                    <h2>@labs.Count</h2>
+                    <p>🧪 Лаборатории</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-custom p-4 text-center">
+                    <h2>@slots.Count</h2>
+                    <p>📅 Термини</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <form method="get" action="/Home/AddSemester">
+                    <label class="fw-bold mb-2">➕ Додади семестар</label>
+                    <div class="d-flex gap-2">
+                        <select name="name" class="form-select">
+                            <option value="">-- Додади семестар --</option>
+                            <option value="Семестар 1">Семестар 1</option>
+                            <option value="Семестар 2">Семестар 2</option>
+                            <option value="Семестар 3">Семестар 3</option>
+                            <option value="Семестар 4">Семестар 4</option>
+                            <option value="Семестар 5">Семестар 5</option>
+                            <option value="Семестар 6">Семестар 6</option>
+                            <option value="Семестар 7">Семестар 7</option>
+                            <option value="Семестар 8">Семестар 8</option>
+                        </select>
+                        <button class="btn btn-primary">Додади</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <form method="post" action="/Home/DeleteSemester">
+                    <label class="fw-bold text-danger mb-2">🗑 Избриши семестар</label>
+                    <div class="d-flex gap-2">
+                        <select name="id" class="form-select">
+                            <option value="">-- Избриши семестар --</option>
+                            @foreach (var s in (ViewBag.Semesters as List<LabsRaspored.Models.Semestar>) ?? new())
+                            {
+                                <option value="@s.Id">@s.Name</option>
+                            }
+                        </select>
+                        <button class="btn btn-danger">Избриши</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (ViewBag.SelectedSemester != null)
+        {
+            <div class="text-center mt-4">
+                <div class="semester-badge">
+                    ✅ Активен семестар: @ViewBag.SelectedSemester.Name
+                </div>
+            </div>
+        }
+
+        <form method="get" id="semesterForm">
+            <select name="semesterId" onchange="this.form.submit()" class="form-select">
+                @foreach (var s in ViewBag.Semesters)
+                {
+                    if (ViewBag.SelectedSemesterId == s.Id)
+                    {
+                        <option value="@s.Id" selected>@s.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@s.Id">@s.Name</option>
+                    }
+                }
+            </select>
+        </form>
+    </div>
+
+    @if (ViewBag.SelectedSemesterId != null && (int)ViewBag.SelectedSemesterId > 0)
+    {
+        <div class="card card-custom p-4">
+            <h5 class="section-title">➕ Додади предмет</h5>
+            <div class="d-flex gap-2">
+                <select id="subjectDropdown" class="form-select">
+                    <option value="">-- Избери предмет --</option>
+                    @foreach (var s in allSubjects)
+                    {
+                        var isRequired = s.Name.ToUpper().Contains("ЗАДОЛЖИТЕЛЕН");
+
+                        <option value="@s.Id">
+
+                            @(isRequired ? "📌 " : "🟢 ")
+
+                            @s.Name
+
+                        </option>
+                    }
+                </select>
+                <button class="btn btn-primary" onclick="addSubject()">Додади</button>
+            </div>
+        </div>
+    }
+
+    <table class="table align-middle text-center">
+        <thead>
+            <tr>
+                <th>📘 Предмет</th>
+                <th>👨‍🎓 Студенти</th>
+                <th>🔁 Фреквенција</th>
+                <th>💾 Save</th>
+                <th>🗑 Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>
+                        @{
+                            var isRequired = s.Name.Contains("ЗАДОЛЖИТЕЛЕН");
+                            var cleanName = s.Name
+                                .Replace("--(ЗАДОЛЖИТЕЛЕН ПРЕДМЕТ)", "")
+                                .Replace("--(ИЗБОРЕН ПРЕДМЕТ)", "")
+                                .Trim();
+                        }
+
+                        <div>
+                            <span>
+                                @(isRequired ? "📌 " : "")
+                                @cleanName
+                            </span>
+
+                            @if (isRequired)
+                            {
+                                <span style="color:red; font-weight:bold;">
+                                    ЗАДОЛЖИТЕЛЕН ПРЕДМЕТ
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="color:green; font-weight:bold;">
+                                    ИЗБОРЕН ПРЕДМЕТ
+                                </span>
+                            }
+                        </div>
+                    </td>
+
+                    <form method="post" action="/Home/UpdateSubject">
+                        <input type="hidden" name="id" value="@s.Id" />
+                        <input type="hidden" name="semesterId" value="@ViewBag.SelectedSemesterId" />
+
+                        <td>
+                            <input type="number" name="students" value="@s.Students" class="form-control students-input" />
+                        </td>
+
+                        <td>
+                            <select name="frequency" class="form-select frequency-select">
+                                <option value="1 недела" selected="@(s.Frequency == "1 недела")">1 недела</option>
+                                <option value="2 недели" selected="@(s.Frequency == "2 недели")">2 недели</option>
+                                <option value="3 недели" selected="@(s.Frequency == "3 недели")">3 недели</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <button type="submit" class="btn btn-success">💾</button>
+                        </td>
+                    </form>
+
+                    <td>
+                        <form method="post" action="/Home/DeleteSubject">
+                            <input type="hidden" name="id" value="@s.Id" />
+                            <input type="hidden" name="semesterId" value="@ViewBag.SelectedSemesterId" />
+                            <button class="btn btn-danger">🗑</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="card card-custom p-4 mt-4">
+        <h5 class="section-title">🧪 Лаборатории</h5>
+        <form action="/Home/AddLab" method="post" class="row g-2 align-items-center">
+            <input type="hidden" name="semesterId" value="@ViewBag.SelectedSemesterId" />
+            <input type="hidden" name="id" value="0" id="labId" />
+
+            <div class="col-md-5">
+                <input name="name" class="form-control" placeholder="Име на лабораторија" />
+            </div>
+            <div class="col-md-4">
+                <input name="capacity" class="form-control" placeholder="Капацитет" />
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100">➕ Додади</button>
+            </div>
+        </form>
+
+        @if (labs.Any())
+        {
+            <table class="table align-middle text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>🧪 Име</th>
+                        <th>👥 Капацитет</th>
+                        <th>✏ Edit</th>
+                        <th>💾 Save</th>
+                        <th>🗑 Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var lab in labs)
+                    {
+                        <tr>
+                            <form method="post" action="/Home/UpdateLab">
+                                <input type="hidden" name="id" value="@lab.Id" />
+                                <input type="hidden" name="semesterId" value="@ViewBag.SelectedSemesterId" />
+
+                                <td>
+                                    <input class="form-control" name="name" value="@lab.Name" />
+                                </td>
+                                <td>
+                                    <input class="form-control" type="number" name="capacity" value="@lab.Capacity" />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-warning" onclick="editLab(@lab.Id, '@lab.Name', @lab.Capacity)">
+                                        ✏ Edit
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success">💾</button>
+                                </td>
+                            </form>
+                            <td>
+                                <form method="post" action="/Home/DeleteLab">
+                                    <input type="hidden" name="id" value="@lab.Id" />
+                                    <input type="hidden" name="semesterId" value="@ViewBag.SelectedSemesterId" />
+                                    <button class="btn btn-danger">🗑</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <div class="card card-custom p-4 mt-4">
+        <h5 class="section-title">📊 Статистика</h5>
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-warning">⚠ Нема внесени предмети.</div>
+        }
+        else
+        {
+            foreach (var s in Model)
+            {
+                var assigned = slots.Where(x => x.SubjectId == s.Id).Sum(x => x.AssignedStudents);
+                var remaining = s.Students - assigned;
+                if (remaining < 0) remaining = 0;
+                var percent = s.Students > 0 ? (assigned * 100 / s.Students) : 0;
+
+                var cleanStatName = s.Name
+                                    .Replace("--(ЗАДОЛЖИТЕЛЕН ПРЕДМЕТ)", "")
+                                    .Replace("--(ИЗБОРЕН ПРЕДМЕТ)", "")
+                                    .Trim();
+
+                <div class="card-custom p-3 mb-3">
+                    <h6 class="section-title">📚 @cleanStatName</h6>
+                    <div>✔ Распределени: <b>@assigned</b></div>
+                    <div>⏳ Останати: <b>@remaining</b></div>
+                    <div class="progress mt-2">
+                        <div class="progress-bar bg-success" style="width:@percent%"></div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="d-flex gap-2 mb-3">
+        <a href="/Home/ExportPdf?semesterId=@ViewBag.SelectedSemesterId"
+           class="btn btn-danger">
+            📄 Симни PDF
+        </a>
+
+        <a href="/Home/ExportExcel?semesterId=@ViewBag.SelectedSemesterId"
+           class="btn btn-success">
+            📊 Симни Excel
+        </a>
+    </div>
+
+    <div class="card card-custom p-4">
+        <h5 class="section-title">📅 Распоред</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered schedule-table text-center align-middle">
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="time-header">Време</th>
+                        @foreach (var day in days)
+                        {
+                            <th colspan="@labs.Count" class="day-header">@day</th>
+                        }
+                    </tr>
+                    <tr>
+                        @foreach (var day in days)
+                        {
+                            @foreach (var lab in labs)
+                            {
+                                <th class="lab-header">@lab.Name</th>
+                            }
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in times)
+                    {
+                        <tr>
+                            <td class="time-cell">@t</td>
+                            @foreach (var day in days)
+                            {
+                                @foreach (var lab in labs)
+                                {
+                                    <td>
+                                        <form method="post" action="/Home/AssignSlot">
+                                            <input type="hidden" name="semesterId" value="@ViewBag.SelectedSemesterId" />
+                                            <input type="hidden" name="time" value="@($"{day}-{t}")" />
+                                            <input type="hidden" name="labId" value="@lab.Id" />
+
+                                            @{
+                                                var existing = slots.FirstOrDefault(x => x.Time == $"{day}-{t}" && x.LabId == lab.Id);
+                                            }
+
+                                            @if (existing != null)
+                                            {
+                                                var subject = Model.FirstOrDefault(x => x.Id == existing.SubjectId);
+                                                var cleanCellName = subject?.Name
+                                                    .Replace("--(ЗАДОЛЖИТЕЛЕН ПРЕДМЕТ)", "")
+                                                    .Replace("--(ИЗБОРЕН ПРЕДМЕТ)", "")
+                                                    .Trim();
+
+                                                <div class="slot-filled" style="background:#4f46e5">
+                                                    <div>@cleanCellName</div>
+                                                    <small>@existing.AssignedStudents студенти</small>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <select name="subjectId" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                    <option value="">Избери предмет</option>
+                                                    @foreach (var s in Model)
+                                                    {
+                                                        var cleanOptName = s.Name
+                                                            .Replace("--(ЗАДОЛЖИТЕЛЕН ПРЕДМЕТ)", "")
+                                                            .Replace("--(ИЗБОРЕН ПРЕДМЕТ)", "")
+                                                            .Trim();
+
+                                                        <option value="@s.Id">@cleanOptName</option>
+                                                    }
+                                                </select>
+                                            }
+                                        </form>
+                                    </td>
+                                }
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div class="toast show text-bg-success border-0">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        @TempData["Message"]
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+    }
+</script>
+
+<script>
+    function addSubject() {
+        let subjectId = document.getElementById("subjectDropdown").value;
+        let semesterId = @ViewBag.SelectedSemesterId;
+
+        if (!subjectId) {
+            alert("Избери предмет!");
+            return;
+        }
+
+        fetch('/Home/AddSubject', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `subjectId=${subjectId}&semesterId=${semesterId}`
+        })
+        .then(res => {
+            if (res.ok) {
+
+                // 🔥 RESET DROPDOWN
+                document.getElementById("subjectDropdown").selectedIndex = 0;
+
+                // 🔥 reload page (да се освежи табелата)
+                location.reload();
+            }
+        });
+    }
+</script>
+
+<script>
+    function editLab(id, name, capacity) {
+        document.getElementById("labId").value = id;
+        document.querySelector("input[name='name']").value = name;
+        document.querySelector("input[name='capacity']").value = capacity;
+    }
+</script>
+
+<script>
+    window.addEventListener("beforeunload", function () {
+        sessionStorage.setItem("scrollPosition", window.scrollY);
+    });
+
+    window.addEventListener("load", function () {
+        const scrollPosition = sessionStorage.getItem("scrollPosition");
+        if (scrollPosition !== null) {
+            window.scrollTo({
+                top: parseInt(scrollPosition),
+                behavior: "instant"
+            });
+        }
+    });
+</script>
