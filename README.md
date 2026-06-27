@@ -2,7 +2,7 @@
 
 ASP.NET Core MVC Project
 
-Developed by: Rosana Dimitrovska, Maja Poposka and Dusica Velkova
+### Developed by: Rosana Dimitrovska, Maja Poposka and Dusica Velkova
 ---
 
 # Македонски / English
