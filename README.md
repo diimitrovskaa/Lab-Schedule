@@ -380,3 +380,380 @@ Dusica Velkova
 * Доделување термин
 
 Со тоа се спречува внесување невалидни податоци и се одржува точноста на распоредот.
+
+---
+
+# English
+
+# 1. Application Description
+
+The **Lab Schedule** application is a web-based system designed for automated creation, organization, and management of laboratory exercise schedules.
+
+The main purpose of the application is to provide a simple and efficient way to organize educational activities by connecting subjects, laboratories, students, and available time slots.
+
+Using the application, the user can:
+
+- Create and manage semesters
+- Add and remove subjects
+- Define the number of students
+- Add laboratories with different capacities
+- Create schedules based on days and time periods
+- Monitor distribution statistics
+- Save and export laboratory schedules in PDF and Excel formats
+
+For better user experience, the application includes:
+
+- Modern and clean design
+- Responsive interface
+- Dark Mode
+- Interactive tables
+- Automatic database storage
+- PDF and Excel document generation
+
+The application is developed using the ASP.NET Core MVC architecture, where the application logic, interface, and data are separated into different components.
+
+---
+
+# 2. Application Functionalities
+
+## 2.1 Main Dashboard
+
+When starting the application, the user enters the main dashboard, which represents the central place for managing the laboratory scheduling system.
+
+The dashboard provides a quick overview of important information related to the current schedule through visual statistic cards.
+
+The main page displays:
+
+* Total number of subjects
+* Number of available laboratories
+* Number of created time slots
+* Currently active semester
+
+Through this dashboard, the user can manage the entire process of creating a schedule, from defining semesters and entering data to final schedule creation and exporting.
+
+---
+
+## 2.2 Semester Management
+
+The first step in using the application is selecting or creating a semester where laboratory exercises will be organized.
+
+The system supports multiple semesters, where each semester contains independent data.
+
+Available semesters:
+
+* Semester 1
+* Semester 2
+* Semester 3
+* Semester 4
+* Semester 5
+* Semester 6
+* Semester 7
+* Semester 8
+
+Each semester contains:
+
+* Subjects
+* Laboratories
+* Schedule
+* Assigned time slots
+
+The user can:
+
+* Add a new semester
+* Select an active semester
+* Delete an existing semester
+
+---
+
+## 2.3 Subject Management
+
+After selecting a semester, the user can add subjects that will be included in the laboratory schedule.
+
+Each subject contains:
+
+* Subject name
+* Subject type
+* Number of students
+* Laboratory exercise frequency
+
+Subjects are visually separated into:
+
+📌 **Mandatory Subject**
+
+🟢 **Elective Subject**
+
+The frequency option allows the user to define how often laboratory exercises are organized:
+
+* Every week
+* Every two weeks
+* Every three weeks
+
+For each subject the user can:
+
+* Change student number
+* Change frequency
+* Save changes
+* Remove the subject
+
+---
+
+## 2.4 Laboratory Management
+
+Before creating a schedule, available laboratories need to be defined.
+
+For each laboratory, the following information is entered:
+
+* Laboratory name
+* Maximum capacity
+
+Example:
+
+**Visual Programming**
+
+Capacity: 30 students
+
+The application allows:
+
+* Creating new laboratories
+* Editing existing data
+* Saving changes
+* Deleting laboratories
+
+---
+
+## 2.5 Statistics and Analysis
+
+The application includes a statistics module for monitoring subject distribution.
+
+For every subject, the system displays:
+
+* Total number of students
+* Assigned students
+* Remaining students
+* Completion percentage
+
+This allows the user to easily check whether all students are successfully assigned to the schedule.
+
+---
+
+## 2.6 Creating Laboratory Schedule
+
+The main functionality of the system is creating an interactive laboratory schedule.
+
+The schedule connects:
+
+* Day
+* Time period
+* Laboratory
+* Subject
+
+The schedule is organized by working days:
+
+* Monday
+* Tuesday
+* Wednesday
+* Thursday
+* Friday
+
+Available time periods:
+
+* 08:00 - 09:30
+* 09:30 - 11:00
+* 11:00 - 12:30
+* 12:30 - 14:00
+* 14:00 - 15:30
+* 15:30 - 17:00
+* 17:00 - 18:30
+* 18:30 - 20:00
+
+Each slot represents:
+
+* Day
+* Time
+* Laboratory
+* Assigned subject
+
+When selecting a subject, the data is automatically saved through the controller.
+
+---
+
+## 2.7 Exporting the Schedule
+
+After completing the schedule, the user can export the final result.
+
+Supported formats:
+
+* PDF document
+* Excel file
+
+Exported documents allow:
+
+* Sharing
+* Printing
+* Additional processing
+
+---
+
+# 3. Technical Implementation
+
+## 3.1 User Interface (GUI)
+
+The user interface is created using Razor Views within the ASP.NET Core MVC architecture.
+
+Implemented features:
+
+* Statistic cards
+* Interactive tables
+* Dropdown menus
+* Forms for adding and editing data
+* Responsive design
+* Dark Mode
+
+Additional improvements:
+
+* Modern CSS gradients
+* Interactive animations
+* Visual difference between mandatory and elective subjects
+* Toast notifications
+
+---
+
+## 3.2 Data Management
+
+Application data is dynamically loaded through MVC models and displayed using Razor syntax.
+
+Main system models:
+
+### Predmeti
+
+Represents a subject used in the laboratory schedule.
+
+Contains:
+
+* Subject name
+* Subject type
+* Number of students
+* Exercise frequency
+
+### Laboratorija
+
+Represents a laboratory where exercises are held.
+
+Contains:
+
+* Laboratory name
+* Maximum capacity
+
+### Semester
+
+Defines the academic period where the schedule is organized.
+
+Each semester contains:
+
+* Subjects
+* Laboratories
+* Time slots
+
+The application uses a database through Entity Framework Core for permanent data storage.
+
+Stored data includes:
+
+* Semesters
+* Subjects
+* Laboratories
+* Schedules
+* Time slots
+
+### Slot
+
+Represents a specific schedule position.
+
+Each slot contains:
+
+* Day
+* Time
+* Laboratory
+* Assigned subject
+
+---
+
+## 3.3 Schedule Creation
+
+The main functionality of the system is creating laboratory schedules.
+
+The schedule is organized as a matrix connecting:
+
+* Working days
+* Time intervals
+* Available laboratories
+
+The system allows:
+
+* Assigning subjects to free slots
+* Displaying assigned subjects
+* Tracking student distribution
+
+---
+
+## 3.4 Statistics Module
+
+The application calculates:
+
+* Total students
+* Assigned students
+* Remaining students
+* Completion percentage
+
+This helps users verify whether the schedule is fully organized.
+
+---
+
+## 3.5 Data Export
+
+The system supports document generation from created schedules.
+
+Supported formats:
+
+### PDF
+
+Provides:
+
+* Schedule preview
+* Printing
+* Archiving
+
+### Excel
+
+Provides:
+
+* Data analysis
+* Additional editing
+* Easy sharing
+
+---
+
+## 3.6 JavaScript Features
+
+JavaScript is used to improve application interaction.
+
+Implemented features:
+
+* Dark Mode switching
+* Adding subjects using Fetch API
+* Saving scroll position
+* Dynamic laboratory editing
+
+---
+
+## 3.7 Validation and Control
+
+The application provides validation during data input.
+
+Checks are performed when:
+
+* Selecting subjects
+* Creating semesters
+* Entering laboratory capacity
+* Assigning schedule slots
+
+This prevents invalid data and maintains schedule accuracy.
